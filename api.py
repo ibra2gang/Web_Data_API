@@ -50,6 +50,20 @@ def add_skill_to_pal_html():
 def modify_skill_html():
     return render_template('modify_skill.html')
 
+
+@app.route('/get_types_pal')
+def get_types_pal_html():
+    return  render_template('get_types_pal.html')
+
+@app.route('/add_types_to_pall')
+def add_type_to_pall_html():
+    return  render_template('add_type_to_pall.html')
+
+
+@app.route('/remove_type_to_pall')
+def remove_type_to_pall_html():
+    return render_template('remove_type_to_pal.html')
+
 #######################################
 
 
@@ -303,10 +317,12 @@ def modify_skill():
     skill_name = request.json.get('skill_name')
     attribute_name = request.json.get('attribute_name')
     new_value = request.json.get('new_value')
-
+    print(pal_name)
+    print(skill_name)
+    print(attribute_name)
+    print(new_value)
     if not all([pal_name, skill_name, attribute_name, new_value]):
         return jsonify({'message': 'Veuillez fournir toutes les informations nécessaires'}), 400
-
     db = client[default_db]
     collection = db[default_collection]
 
@@ -314,11 +330,10 @@ def modify_skill():
     document = collection.find_one({'name': pal_name})
 
     if document:
-        # Recherche du skill à modifier par son nom
         skills = document.get('skills', [])
         for skill in skills:
             if skill['name'] == skill_name:
-                # Modification de l'attribut spécifié avec la nouvelle valeur
+                print(skill)
                 if attribute_name in skill:
                     skill[attribute_name] = new_value
                     # Mise à jour du document dans la base de données
@@ -332,6 +347,82 @@ def modify_skill():
         return jsonify({"message": f"Aucun Pal avec le nom '{pal_name}' trouvé"}), 404
 
 
+
+
+@app.route('/api/GetTypesPall', methods=['GET'])
+def get_types_pall():
+    db_name = default_db
+    collection_name = default_collection
+    pal_name = request.args.get('name')
+
+    if not pal_name:
+        return jsonify({'message': 'Veuillez fournir un nom de Pal valide'}), 400
+
+    db = client[db_name]
+    collection = db[collection_name]
+
+    # Recherche du Pal par son nom
+    document = collection.find_one({'name': pal_name})
+
+    if document:
+        # Récupération des types du Pal trouvé
+        types = document.get('types', [])
+
+        # Pas besoin d'ajouter un identifiant unique pour chaque type, donc on peut directement retourner la liste des types
+        return jsonify({"types": types})
+    else:
+        return jsonify({"message": f"Aucun Pal avec le nom '{pal_name}' trouvé"}), 404
+
+
+
+@app.route('/api/AddTypeToPal', methods=['POST'])
+def add_type_to_pal():
+    # Récupération des données JSON envoyées avec la requête
+    data = request.json
+    pal_name = data.get('name')
+    new_type = data.get('type')
+
+    if not pal_name or not new_type:
+        return jsonify({'message': 'Le nom du Pal et le type à ajouter sont requis.'}), 400
+
+    # Connexion à la base de données et à la collection spécifiques
+    db = client[default_db]
+    collection = db[default_collection]
+
+    # Recherche du Pal par son nom et ajout du nouveau type
+    result = collection.find_one_and_update(
+        {'name': pal_name},
+        {'$addToSet': {'types': new_type}},  # Utilisation de $addToSet pour éviter les doublons
+        return_document=True
+    )
+
+    if result:
+        return jsonify({'message': f'Le type "{new_type}" a été ajouté avec succès au Pal "{pal_name}".'})
+    else:
+        return jsonify({'message': f'Le Pal nommé "{pal_name}" n\'a pas été trouvé.'}), 404
+
+
+@app.route('/api/RemoveTypeFromPal', methods=['POST'])
+def remove_type_from_pal():
+    data = request.json
+    pal_name = data.get('name')
+    pal_type = data.get('type')
+
+    db = client[default_db]
+    collection = db[default_collection]
+    if not pal_name or not pal_type:
+        return jsonify({'message': 'Le nom du Pal et le type à supprimer sont requis.'}), 400
+
+    result = collection.find_one_and_update(
+        {'name': pal_name},
+        {'$pull': {'types': pal_type}},  # Utilise $pull pour supprimer le type
+        return_document=True
+    )
+
+    if result:
+        return jsonify({'message': f'Le type "{pal_type}" a été supprimé avec succès du Pal "{pal_name}".'})
+    else:
+        return jsonify({'message': f'Le Pal nommé "{pal_name}" n\'a pas été trouvé ou le type "{pal_type}" n\'existe pas.'}), 404
 
 
 if __name__ == '__main__':
