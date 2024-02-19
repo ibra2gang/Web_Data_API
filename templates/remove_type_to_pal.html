@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supprimer un type d'un Pal</title>
+    <!-- Insérez vos styles ici -->
+</head>
+<body>
+    <h1>Supprimer un type d'un Pal</h1>
+    <form id="removeTypeForm">
+        <label for="palName">Nom du Pal :</label>
+        <input type="text" id="palName" name="palName" required>
+
+        <label for="palType">Type à supprimer :</label>
+        <input type="text" id="palType" name="palType" required>
+
+        <button type="button" onclick="removeTypeFromPal()">Supprimer le Type</button>
+    </form>
+
+    <script>
+
+         function removeTypeFromPal() {
+            const palName = document.getElementById('palName').value;
+            const palType = document.getElementById('palType').value;
+
+            fetch('/api/RemoveTypeFromPal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: palName,
+                    type: palType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression du type du Pal:', error);
+                alert('Erreur lors de la suppression du type. Veuillez vérifier la console pour plus de détails.');
+            });
+         }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Type à un Pal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <form id="addTypeForm">
+        <div>
+            <label for="palName">Nom du Pal:</label>
+            <input type="text" id="palName" name="palName" placeholder="Entrez le nom du Pal" required>
+        </div>
+        <div>
+            <label for="palType">Type à ajouter:</label>
+            <input type="text" id="palType" name="palType" placeholder="Entrez le type à ajouter" required>
+        </div>
+        <button type="button" onclick="addTypeToPal()">Ajouter le Type</button>
+    </form>
+
+    <script>
+        function addTypeToPal() {
+            const palName = document.getElementById('palName').value;
+            const palType = document.getElementById('palType').value;
+
+            fetch('/api/AddTypeToPal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: palName,
+                    type: palType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'ajout du type au Pal:', error);
+                alert('Erreur lors de l\'ajout du type. Veuillez vérifier la console pour plus de détails.');
+            });
+        }
+    </script>
+</body>
+</html>
