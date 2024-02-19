@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Pour les icons -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Utilisation de toute la hauteur de la fenêtre */
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: #ffffff; /* Arrière-plan blanc pour le conteneur */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre pour le conteneur */
+            border-radius: 10px; /* Bordures arrondies */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center; /* Centrage des éléments de la liste */
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            display: flex;
+            align-items: center; /* Alignement vertical des icons et du texte */
+        }
+
+        a:hover {
+            color: #0056b3;
+            text-decoration: underline; /* Souligne le lien au survol */
+        }
+
+        i { /* Style pour les icons */
+            margin-right: 8px; /* Espace entre l'icon et le texte */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Menu Principal</h1>
+        <ul>
+            <li><a href="/ajouter_pal"><i class="fas fa-plus"></i>Ajouter un Nouveau pal</a></li>
+            <li><a href="/rechercher_par_id"><i class="fas fa-search"></i>Rechercher par ID</a></li>
+            <li><a href="/rechercher_par_type"><i class="fas fa-filter"></i>Rechercher par Type</a></li>
+            <li><a href="/rechercher_par_name"><i class="fas fa-truck-loading"></i>Rechercher par Name</a></li>
+            <Li><a  href="/get_skill_pal"><i class ="fa fa-ruler"></i>Recup le skill d'un pal</a></Li>
+            <Li><a  href = "/add_skill_to_pal" ><i class ="fa fa-ruler" ></i> Ajouter un skill à un pal </a></Li>
+            <Li><a  href ="/modify_skill"  ><i class ="fa -fa-ruler"></i> Modifier le skill d'un pal brotheeer </Li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire Dynamique</title>
+    <style>
+        /* Ajoutez votre CSS personnalisé ici */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <form id="dynamicForm">
+        <div id="step1">
+            <label for="info1">Info 1:</label>
+            <input type="text" id="info1" name="info1" placeholder="Entrez l'info 1" required>
+            <button type="button" onclick="nextStep()">Suivant</button>
+        </div>
+        <div id="step2" style="display: none;">
+            <label for="info2">Info 2:</label>
+            <input type="text" id="info2" name="info2" placeholder="Entrez l'info 2" required>
+            <button type="button" onclick="submitForm()">Envoyer</button>
+        </div>
+    </form>
+
+    <script>
+        function nextStep() {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        }
+
+        function submitForm() {
+            // Ici, vous pouvez ajouter la logique pour soumettre le formulaire
+            // Par exemple, vous pouvez récupérer les valeurs des champs de saisie et les envoyer à un serveur
+            const info1 = document.getElementById('info1').value;
+            const info2 = document.getElementById('info2').value;
+
+            // Vous pouvez également changer de page ou afficher un message de confirmation
+            alert(`Les informations ont été soumises : Info 1 = ${info1}, Info 2 = ${info2}`);
+            // Ici, vous pouvez rediriger vers une autre page ou effectuer d'autres actions après la soumission du formulaire
+        }
+    </script>
+</body>
+</html>
