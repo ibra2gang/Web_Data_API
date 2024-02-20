@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechercher des Pals par Rareté</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rechercher des Pals par Rareté</h1>
+    <div>
+        <input type="number" id="rarityInput" placeholder="Entrez une rareté">
+        <button onclick="getPalsByRarity()">Rechercher</button>
+    </div>
+
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Rareté</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Ici il y a aura le tableau avec les résultats -->
+        </tbody>
+    </table>
+
+    <script>
+        function getPalsByRarity() {
+            const rarity = document.getElementById('rarityInput').value;
+            fetch(`/api/GetPalsByRarity?rarity=${rarity}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+                resultsTable.innerHTML = ''; // Clear previous results
+                data.forEach(pal => {
+                    let row = resultsTable.insertRow();
+                    let cellName = row.insertCell(0);
+                    let cellRarity = row.insertCell(1);
+                    cellName.textContent = pal.name;
+                    cellRarity.textContent = pal.rarity;
+                });
+            })
+            .catch(error => console.error('Erreur:', error));
+        }
+    </script>
+</body>
+</html>

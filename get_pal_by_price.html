@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechercher des Pals par Prix</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rechercher des Pals par Prix</h1>
+    <div id="priceRangeDisplay">Chargement de la plage de prix, ça arriveeee</div>
+    <div>
+        <input type="number" id="minPriceInput" placeholder="Prix minimum">
+        <input type="number" id="maxPriceInput" placeholder="Prix maximum">
+        <button onclick="getPalsByPrice()">Rechercher</button>
+    </div>
+
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prix</th>
+            </tr>
+        </thead>
+        <tbody>
+        <!-- Je vais afficher les résultats de la recherche ici  -->
+        </tbody>
+    </table>
+
+    <script>
+        function getPalsByPrice() {
+            const minPrice = document.getElementById('minPriceInput').value || 0;
+            const maxPrice = document.getElementById('maxPriceInput').value || 1000000;  // cette ligne et celle du dessus ce sont des valeur par default !
+            fetch(`/api/GetPalsByPrice?min=${minPrice}&max=${maxPrice}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+                resultsTable.innerHTML = '';
+                data.forEach(pal => {
+                    let row = resultsTable.insertRow();
+                    let cellName = row.insertCell(0);
+                    let cellPrice = row.insertCell(1);
+                    cellName.textContent = pal.name;
+                    cellPrice.textContent = pal.price;
+                });
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la recherche. Veuillez vérifier la console pour plus de détails.');
+            });
+        }
+
+        function loadPriceRange() {
+            fetch('/api/GetPriceRange')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('priceRangeDisplay').textContent =
+                    `Plage de prix : ${data.minPrice} à ${data.maxPrice}`;
+                document.getElementById('minPriceInput').placeholder = `Min (${data.minPrice})`;
+                document.getElementById('maxPriceInput').placeholder = `Max (${data.maxPrice})`;
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement de la plage de prix:', error);
+                document.getElementById('priceRangeDisplay').textContent =
+                    "Erreur lors du chargement de la plage de prix.";
+            });
+        }
+        window.onload = loadPriceRange;
+
+    </script>
+</body>
+</html>

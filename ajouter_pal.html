@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Nouveau pal</title>
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centre le contenu verticalement */
+        }
+
+        h1 {
+            margin: 20px 0;
+        }
+
+        input {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            width: 50%; /* Réduit la largeur du formulaire et le centre */
+            max-width: 500px; // jcrois ça c pour les trop grands ecran pour eviter ça s'étire
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centre les éléments du formulaire verticalement */
+        }
+
+        input[type="text"] {
+            width: 80%; /* Réduit la largeur de l'input */
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .column {
+            width: auto; /* Ajuste selon le contenu */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centre les éléments verticalement */
+        }
+
+        .column ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px; /* Ajoute un peu d'espace entre le bouton et la liste */
+        }
+
+        .column ul li {
+            margin: 5px 0; /* Ajoute un peu d'espace entre les éléments de la liste */
+        }
+
+        //les styles comme ça on trouve sur stackoverflow
+    </style>
+</head>
+<body>
+    <h2>Ajouter un Nouveau pal</h2>
+    <!--<form id="insertForm">-->
+        <input type="text" id="db" name="db" placeholder="Mettez Hamza" required>
+        <input type="text" id="collection" name="collection" placeholder="Mettez pal " required>
+        <input type="text" id="id" name="id" placeholder="Document ID" required>
+        <input type="text" id="nom" name="nom" placeholder="Name" required>
+        <button type="button" onclick="ajouterPal()">Submit</button>
+    <!--</form>-->
+    <script src="/static/script.js"></script>
+</body>
+</html>
