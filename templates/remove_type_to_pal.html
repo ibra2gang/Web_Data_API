@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supprimer un type d'un Pal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        form {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Supprimer un type d'un Pal</h1>
+    <form id="removeTypeForm">
+        <div>
+            <label for="palName">Nom du Pal :</label>
+            <input type="text" id="palName" name="palName" required>
+        </div>
+
+        <div>
+            <label for="palType">Type à supprimer :</label>
+            <input type="text" id="palType" name="palType" required>
+        </div>
+
+        <button type="button" onclick="removeTypeFromPal()">Supprimer le Type</button>
+    </form>
+
+    <script>
+        function removeTypeFromPal() {
+            const palName = document.getElementById('palName').value;
+            const palType = document.getElementById('palType').value;
+
+            fetch('/api/RemoveTypeFromPal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: palName,
+                    type: palType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression du type du Pal:', error);
+                alert('Erreur lors de la suppression du type. Veuillez vérifier la console pour plus de détails.');
+            });
+         }
+    </script>
+</body>
+</html>

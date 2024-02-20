@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier les compétences d'un Pal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #SkillPal {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .skillButton {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .skillButton:hover {
+            background-color: #004080;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+    </style>
+</head>
+<body>
+    <form id="modifySkillForm" method="POST">
+        <div>
+            <label for="palName">Nom du Pal:</label>
+            <input type="text" id="palName" name="palName" placeholder="Entrez le nom du Pal :" required>
+            <button type="button" onclick="showSkills()">Suivant</button>
+        </div>
+    </form>
+
+    <div id="TypesPall"></div>
+
+    <script>
+        function showSkills() {
+            const palName = document.getElementById('palName').value;
+            fetch(`/api/GetTypesPall?name=${palName}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('La réponse du réseau n\'était pas ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const typesPall = document.getElementById('TypesPall');
+                    typesPall.innerHTML = ''; // Correction pour effacer le contenu précédent
+
+                    // Supposons que `data.types` soit le tableau des types que vous recevez
+                    data.types.forEach(type => {
+                        const button = document.createElement('button');
+                        button.textContent = type; // Utilisation directe de `type` si c'est une chaîne de caractères
+                        button.className = 'skillButton';
+                        typesPall.appendChild(button); // Ajout du bouton au div
+                    });
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des types:', error);
+                    alert('Erreur lors de la récupération des types. Veuillez vérifier la console pour plus de détails.');
+                });
+        }
+    </script>
+</body>
+</html>
