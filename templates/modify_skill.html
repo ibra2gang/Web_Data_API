@@ -69,18 +69,59 @@
         .skillButton:hover {
             background-color: #004080;
         }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
     </style>
 </head>
 <body>
-    <form id="modifySkillForm" onsubmit="return false;">
+    <form id="modifySkillForm" method="POST">
         <div>
             <label for="palName">Nom du Pal:</label>
-            <input type="text" id="palName" name="palName" placeholder="Entrez le nom du Pal" required>
+            <input type="text" id="palName" name="palName" placeholder="Entrez le nom du Pal :" required>
             <button type="button" onclick="showSkills()">Suivant</button>
         </div>
     </form>
 
     <div id="SkillPal"></div>
+
+    <!-- Modal for Editing Skills -->
+    <div id="skillModal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeModal()" style="float:right; cursor:pointer;">&times;</span>
+            <h2>Détails de la compétence</h2>
+            <form id="modifyAttributeForm">
+                <input type="hidden" id="modalOldName" name="oldName">
+                <label for="modalAttributeName">Attribut à modifier:</label>
+                <input type="text" id="modalAttributeName" name="attributeName" required><br>
+                <label for="modalNewValue">Nouvelle valeur:</label>
+                <input type="text" id="modalNewValue" name="newValue" required><br>
+                <button type="button" onclick="modifyAttribute()">Modifier</button>
+            </form>
+        </div>
+    </div>
 
     <script>
         let skillsData;
@@ -113,14 +154,113 @@
         }
 
         function showSkillAttributes(skill) {
-            const attributeWindow = window.open('', '_blank', 'width=600,height=400');
-            attributeWindow.document.write(`<h2>Détails de la compétence ${skill.name}</h2>`);
-            attributeWindow.document.write('<ul>');
-            for (const [key, value] of Object.entries(skill)) {
-                attributeWindow.document.write(`<li><strong>${key}:</strong> ${value}</li>`);
-            }
-            attributeWindow.document.write('</ul>');
+                    const modal = document.getElementById('skillModal');
+                    const form = document.getElementById('modifyAttributeForm');
+                    // Effacer les champs existants avant d'ajouter de nouveaux
+                    form.innerHTML = '';
+
+                    // Ajouter une section pour afficher les attributs actuels de la compétence
+                    const attributesSection = document.createElement('div');
+                    Object.entries(skill).forEach(([key, value]) => {
+                        if (key !== 'name') { // Ne pas inclure le nom dans cette liste, ou ajustez selon besoin
+                            const attributeDisplay = document.createElement('p');
+                            attributeDisplay.textContent = `${key.charAt(0) + key.slice(1)}: ${value}`;
+                            attributesSection.appendChild(attributeDisplay);
+                        }
+                    });
+                    form.appendChild(attributesSection);
+
+                    // Ajouter un champ caché pour le nom de la compétence
+                    const oldNameInput = document.createElement('input');
+                    oldNameInput.type = 'hidden';
+                    oldNameInput.id = 'modalOldName';
+                    oldNameInput.name = 'oldName';
+                    oldNameInput.value = skill.name;
+                    form.appendChild(oldNameInput);
+
+                    // Garder vos champs existants pour l'attribut à modifier et la nouvelle valeur
+                    const attributeLabel = document.createElement('label');
+                    attributeLabel.setAttribute('for', 'modalAttributeName');
+                    attributeLabel.textContent = "Attribut à modifier:";
+                    form.appendChild(attributeLabel);
+
+                    const attributeNameInput = document.createElement('input');
+                    attributeNameInput.type = 'text';
+                    attributeNameInput.id = 'modalAttributeName';
+                    attributeNameInput.name = 'attributeName';
+                    attributeNameInput.required = true;
+                    form.appendChild(attributeNameInput);
+
+                    form.appendChild(document.createElement('br'));
+
+                    const valueLabel = document.createElement('label');
+                    valueLabel.setAttribute('for', 'modalNewValue');
+                    valueLabel.textContent = "Nouvelle valeur:";
+                    form.appendChild(valueLabel);
+
+                    const newValueInput = document.createElement('input');
+                    newValueInput.type = 'text';
+                    newValueInput.id = 'modalNewValue';
+                    newValueInput.name = 'newValue';
+                    newValueInput.required = true;
+                    form.appendChild(newValueInput);
+
+                    form.appendChild(document.createElement('br'));
+
+                    // Ajouter un bouton de soumission pour le formulaire
+                    const submitButton = document.createElement('button');
+                    submitButton.textContent = 'Modifier';
+                    submitButton.type = 'button'; // Assurez-vous que ce bouton ne soumet pas le formulaire
+                    submitButton.onclick = modifyAttribute; // Assurez-vous que cette fonction traite correctement la modification
+                    form.appendChild(submitButton);
+
+                    modal.style.display = "flex";
+        }
+
+
+        function modifyAttribute() {
+            event.preventDefault();
+            const form = document.getElementById('modifyAttributeForm');
+            const oldName = form.oldName.value;
+            const attributeName = form.attributeName.value;
+            const newValue = form.newValue.value;
+            const palName = document.getElementById('palName').value;
+
+            fetch('/api/ModifySkill', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: palName,
+                    skill_name: oldName,
+                    attribute_name: attributeName,
+                    new_value: newValue
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('La réponse du réseau n\'était pas ok');
+                }
+                console.log(response);
+                return response.json();
+            })
+            .then(data => {
+                console.log(data.message);
+                alert(data.message);
+                //window.location.reload();
+            })
+            .catch(error => {
+                console.error('Erreur lors de la modification du skill:', error);
+                alert('Erreur lors de la modification du skill. Veuillez vérifier la console pour plus de détails.');
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('skillModal').style.display = "none";
         }
     </script>
 </body>
 </html>
+
+<!--Il  y a des fichiers html j'ai préféré mettre direct le js à l'intérieur psk sinon cetait trop lourd et trop chiant à mettre dans script.js je m'y retrouve plus-->
