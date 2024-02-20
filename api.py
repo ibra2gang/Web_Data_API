@@ -64,6 +64,14 @@ def add_type_to_pall_html():
 def remove_type_to_pall_html():
     return render_template('remove_type_to_pal.html')
 
+@app.route('/get_pal_by_rarity')
+def get_pal_by_rarity_html():
+    return render_template('get_pal_by_rarity.html')
+
+@app.route('/get_pal_by_price')
+def get_pal_by_price_html():
+    return render_template('get_pal_by_price.html')
+
 #######################################
 
 
@@ -81,15 +89,62 @@ def remove_type_to_pall_html():
 
 @app.route('/api/insert', methods=['POST'])
 def insert_data():
-
     data = request.json
     db = client[data['db']]
     collection = db[data['collection']]
-    result = collection.insert_one({'_id': data['id'], 'nom': data['nom']})
+
+    # Génère un template de document avec des valeurs par défaut
+    pal_template = {
+        "_id": ObjectId(),  # Génère un ObjectId MongoDB aléatoire
+        "asset": "default_asset",
+        "aura": {
+            "description": None,
+            "name": None,
+            "tech": None
+        },
+        "description": "Description par défaut",
+        "drops": [],
+        "genus": None,
+        "id": None,  # L'ID sera défini après la conversion
+        "image": None,
+        "imageWiki": None,
+        "key": "default_key",
+        "maps": {
+            "day": None,
+            "night": None
+        },
+        "name": data.get('nom', 'Nom par défaut'),  # Utilise le nom fourni ou un nom par défaut
+        "price": 0,
+        "rarity": 1,
+        "size": "M",
+        "skills": [],
+        "stats": {
+            "attack": {"melee": 0, "ranged": 0},
+            "defense": 0,
+            "food": 1,
+            "hp": 100,
+            "speed": {"ride": 0, "run": 0, "walk": 0},
+            "stamina": 100,
+            "support": 0
+        },
+        "suitability": [],
+        "types": ["default_type"],
+        "wiki": None
+    }
+
+    # Convertit l'ID en entier et le définit dans le template
+    try:
+        pal_template['id'] = int(data['id'])
+    except ValueError:
+        return jsonify({"message": "L'ID doit être un nombre entier."}), 400
+
+    # Insère le document dans la collection
+    result = collection.insert_one(pal_template)
     if result.acknowledged:
-        return jsonify({"message": "Document successfully added!"})
+        return jsonify({"message": "Document successfully added with _id: {}".format(pal_template["_id"])}), 200
     else:
         return jsonify({"message": "An error occurred"}), 500
+
 
 
 @app.route('/api/GetAllIDs', methods = ['GET'])
@@ -105,6 +160,7 @@ def get_all_id():
 
 
     ids = [str(doc['id']) for doc in documents]
+    print(ids)
 
     return jsonify(ids)
 
@@ -423,6 +479,56 @@ def remove_type_from_pal():
         return jsonify({'message': f'Le type "{pal_type}" a été supprimé avec succès du Pal "{pal_name}".'})
     else:
         return jsonify({'message': f'Le Pal nommé "{pal_name}" n\'a pas été trouvé ou le type "{pal_type}" n\'existe pas.'}), 404
+
+
+
+@app.route('/api/GetPalsByRarity', methods=['GET'])
+def get_pals_by_rarity():
+    try:
+        rarity = int(request.args.get('rarity'))
+        db = client[default_db]
+        collection = db[default_collection]
+
+        pals = collection.find({"rarity": rarity})
+
+        # Préparation des données pour la réponse
+        pals_list = [{"name": pal["name"], "rarity": pal["rarity"]} for pal in pals]
+
+        return jsonify(pals_list)
+    except Exception as e:
+        print(e)
+        return jsonify({"message": str(e)}), 500
+
+
+
+@app.route('/api/GetPalsByPrice', methods=['GET'])
+def get_pals_by_price():
+    try:
+        min_price = int(request.args.get('min', 0))
+        max_price = int(request.args.get('max', 1000000))  # Utilisez une valeur maximale par défaut élevée
+
+        db = client[default_db]
+        collection = db[default_collection]
+
+        pals = collection.find({"price": {"$gte": min_price, "$lte": max_price}}).sort("price", 1)
+
+        pals_list = [{"name": pal["name"], "price": pal["price"]} for pal in pals]
+
+        return jsonify(pals_list)
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+
+@app.route('/api/GetPriceRange', methods=['GET'])
+def get_price_range():
+    db = client[default_db]
+    collection = db[default_collection]
+
+    # Trouver le prix minimum et maximum parmi tous les Pals pour eviter que l'utilisateur ne met un prix entre 7 et 10 alors que y'en a pas !
+    min_price = collection.find_one(sort=[("price", 1)], projection={"price": 1, "_id": 0})["price"]
+    max_price = collection.find_one(sort=[("price", -1)], projection={"price": 1, "_id": 0})["price"]
+
+    return jsonify({"minPrice": min_price, "maxPrice": max_price})
 
 
 if __name__ == '__main__':
