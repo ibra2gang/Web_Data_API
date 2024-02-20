@@ -25,7 +25,6 @@ function rechercheParType(){
 
     const type = document.getElementById('type').value;
     console.log(type)
-    // Utilisez la comparaison strictement non égale à '' pour vérifier si l'ID n'est pas vide
     if (type !== '') {
         const url = `/api/GetByType?db=Hamza&collection=pal&type=${type}`;
 
@@ -34,19 +33,19 @@ function rechercheParType(){
                 if (!response.ok) {
                     throw new Error('La réponse du réseau n\'était pas ok');
                 }
-                return response.json();  // Convertit la réponse en JSON
+                return response.json();
             })
             .then(data => {
                 const resultWindow = window.open();
                 resultWindow.document.write(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
-                resultWindow.document.close(); // Assurez-vous de fermer le document pour finaliser l'écriture
+                resultWindow.document.close();
             })
             .catch(error => {
                 console.error('Erreur lors de la recherche:', error);
                 alert('Erreur lors de la recherche. Veuillez vérifier la console pour plus de détails.');
             });
     } else {
-        alert("Veuillez entrer un Type valide."); // Correction de 'alerte' à 'alert'
+        alert("Veuillez entrer un Type valide.");
     }
 }
 
@@ -56,21 +55,17 @@ function rechercheParType(){
 function getAllType() {
     const typeListElementLeft = document.getElementById('idListLeft');
 
-    // Réinitialiser la liste des types
     typeListElementLeft.innerHTML = '';
 
-    // Récupérer les types du serveur
     fetch('/api/GetAllType')
         .then(response => {
             if (!response.ok) {
                 throw new Error('La réponse du réseau n\'était pas ok');
             }
-            return response.json(); // Convertit la réponse en JSON
+            return response.json();
         })
         .then(data => {
-            // Vérifier si la réponse contient bien un champ 'types'
             if (data && data.types) {
-                // Ajouter chaque type à la liste
                 data.types.forEach(type => {
                     const li = document.createElement('li');
                     li.textContent = type;
@@ -141,20 +136,20 @@ function rechercheID() {
                 if (!response.ok) {
                     throw new Error('La réponse du réseau n\'était pas ok');
                 }
-                return response.json();  // Convertit la réponse en JSON
+                return response.json();
             })
             .then(data => {
                 const resultWindow = window.open();
                 resultWindow.document.write(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
-                resultWindow.document.close(); // Assurez-vous de fermer le document pour finaliser l'écriture
+                resultWindow.document.close();
             })
             .catch(error => {
                 console.error('Erreur lors de la recherche:', error);
                 alert('Erreur lors de la recherche. Veuillez vérifier la console pour plus de détails.');
             });
     } else {
-        alert("Veuillez entrer un ID valide."); // Correction de 'alerte' à 'alert'
-    }
+        alert("Veuillez entrer un ID valide.");
+        }
 }
 
 
@@ -163,11 +158,9 @@ function getAllID() {
     const idListElementLeft = document.getElementById('idListLeft');
     const idListElementRight = document.getElementById('idListRight');
 
-    // Réinitialiser les listes des IDs
     idListElementLeft.innerHTML = '';
     idListElementRight.innerHTML = '';
 
-    // Récupérer les IDs du serveur
      fetch('/api/GetAllIDs?db=Hamza&collection=pal')
         .then(response => {
             if (!response.ok) {
@@ -176,11 +169,9 @@ function getAllID() {
             return response.json(); // Convertit la réponse en JSON
         })
         .then(data => {
-            // Ajouter chaque ID à la liste
             data.forEach((id, index) => {
                 const li = document.createElement('li');
                 li.textContent = id;
-                // Répartir les IDs dans les deux colonnes
                 if (index % 2 === 0) {
                     idListElementLeft.appendChild(li);
                 } else {
@@ -239,11 +230,9 @@ function getAllName() {
     const idListElementLeft = document.getElementById('idListLeft');
     const idListElementRight = document.getElementById('idListRight');
 
-    // Réinitialiser les listes des IDs
     idListElementLeft.innerHTML = '';
     idListElementRight.innerHTML = '';
 
-    // Récupérer les IDs du serveur
      fetch('/api/GetAllName')
         .then(response => {
             if (!response.ok) {
@@ -252,11 +241,10 @@ function getAllName() {
             return response.json(); // Convertit la réponse en JSON
         })
         .then(data => {
-            // Ajouter chaque ID à la liste
             data.forEach((name, index) => {
                 const li = document.createElement('li');
                 li.textContent = name;
-                // Répartir les IDs dans les deux colonnes
+                //histoire de pas avoir une colonne avec 500 truc et l'autre avec rien je repartis
                 if (index % 2 === 0) {
                     idListElementLeft.appendChild(li);
                 } else {
@@ -424,6 +412,7 @@ function removeTypeFromPal() {
         alert('Erreur lors de la suppression du type. Veuillez vérifier la console pour plus de détails.');
     });
 }
+
 
 
 
