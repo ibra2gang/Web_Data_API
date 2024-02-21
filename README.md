@@ -1,7 +1,17 @@
-Bonjour Monsieur
+Bonjour Monsieur,
 
-J'ai fais mon maximmu ( jespere avoir 20 mdrrr ) 
+J'ai fait de mon mieux (j'espère avoir 20, haha).
 
-Alors pour le docker l'api python discute avec un docker qui s'appelle Hamza et un collection qui s'appelle pal , vous pouvez changer les noms en haut du fichier api.py 
+Alors, pour le Docker, l'API Python communique avec un conteneur Docker appelé "Hamza" et une collection nommée "pal". Vous pouvez changer les noms en haut du fichier api.py.
 
-j'essaie de faire le docker complet avec tout ( db + api + html + js ) 
+J'essaie de créer un Docker complet incluant tout (base de données + API + HTML + JS).
+
+Pour lancer le projet, il suffit de télécharger l'ensemble et de créer un conteneur Docker dans ce cas qui s'appelle "Hamza" à l'intérieur se trouvera une collection appelée "pal" et d'y placer le fichier complet de "pal" que vous nous avez donné lors du dernier cours. Vous pouvez changer le nom du docker et pal dans le fichier api.py "default_db" et "default_collection"
+
+Exécutez le fichier "api.py" et l'API vous indiquera sur quel lien et port elle tourne, cela s'affichera dans la console.
+
+Normalement, il ne devrait y avoir aucun problème pour exécuter et tester toutes les fonctions.
+
+Par défaut, si vous n'avez pas modifié le fichier hosts de votre PC, l'API tournera sur 127.0.0.1.
+
+MERCI :)
