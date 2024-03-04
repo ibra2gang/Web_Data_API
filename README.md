@@ -12,6 +12,8 @@ Exécutez le fichier "api.py" et l'API vous indiquera sur quel lien et port elle
 
 Normalement, il ne devrait y avoir aucun problème pour exécuter et tester toutes les fonctions.
 
+l'HTML prend en compte toutes les fonctions demandées daans le sujet. J'affiche le maximum d'infos que ça soit dans la console python ou des alerts sur le HTML 
+
 Par défaut, si vous n'avez pas modifié le fichier hosts de votre PC, l'API tournera sur 127.0.0.1.
 
 MERCI :)
