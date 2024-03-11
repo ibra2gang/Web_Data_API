@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  api_authent:
+    image: api_python:latest
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db_auth
+    environment:
+      MONGO_URI: "mongodb://db_auth:27017/"
+
+  db_auth:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_hamza_data:/data/db
+
+volumes:
+  mongodb_hamza_data:
+    external: true
