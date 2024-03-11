@@ -10,3 +10,8 @@ cf : https://github.com/ngryman/lol-champions/blob/master/champions.json
 Voila la ligne de commande pour demarrer un docker avec un volume sur un port specific : 
 
 docker run -d -p 27017:27017 -v mongodb_hamza_data:/data/db --name nom_personnalisé mongo
+
+voila la commande qui run le docker compose : docker-compose up -d      
+
+le -d est facultatif c'est si on veut run en back 
+
