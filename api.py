@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI, HTTPException, Header
 from pymongo import MongoClient
 from pydantic import BaseModel
@@ -6,10 +8,15 @@ from datetime import datetime, timedelta
 # Importation d'Uvicorn
 import uvicorn
 from fastapi import Depends
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
-MONGO_URI = "mongodb://localhost:27017/"
+#MONGO_URI = "mongodb://Hamza:27017/"
+#MONGO_URI = "mongodb://172.23.0.2:27017/"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongo:27017/")
+#MONGO_URI = "mongodb://localhost:27017/"
+
 client = MongoClient(MONGO_URI)
 db = client.Hamza
 users_collection = db.infos
@@ -26,9 +33,11 @@ def generate_token(username: str):
 @app.post("/login")
 async def login(user_login: UserLogin):
     user = users_collection.find_one({"user": user_login.user, "password": user_login.password})
+    print(user_login.user, user_login.password)
+    print(user)
     if user:
         token = generate_token(user_login.user)
-        expiration_time = datetime.utcnow() + timedelta(hours=2) #UTC mtn c l'heure en france - 1 donc je rajoute 2 
+        expiration_time = datetime.utcnow() + timedelta(hours=2) #UTC mtn c l'heure en france - 1 donc je rajoute 2
 
 
         users_collection.update_one(
@@ -81,13 +90,34 @@ async def extract_token(Authorization: str = Header(None)):
 @app.get("/check_token")
 async def protected_resource(token: str = Depends(extract_token)):
     user_info = await verify_token(token)
-    user_info = objectid_to_str(user_info)  
+    user_info = objectid_to_str(user_info)
     return {"message": "Ton token est valide brozeeeer"}
 
 
 
+@app.post("/create")
+async def create_user(user_data: UserLogin):
+    # Vérifie si l'utilisateur existe déjà dans la base de données
+    existing_user = users_collection.find_one({"user": user_data.user})
+    if existing_user:
+        return JSONResponse(content={"message": "Utilisateur déjà existant."}, status_code=400)
+
+    # Si l'utilisateur n'existe pas, l'ajouter à la base de données
+
+    new_user_data = {
+        "user": user_data.user,
+        "password": user_data.password,
+        "token": "",
+        "date_expi": None
+    }
+    print(new_user_data)
+    users_collection.insert_one(new_user_data)
+    print(users_collection.find)
+
+    # Retourne les données du compte créé
+    return JSONResponse(content={"message": "Compte créé avec succès."}, status_code=200)
 
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="localhost", port=8000)
