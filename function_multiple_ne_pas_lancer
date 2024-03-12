@@ -68,12 +68,12 @@ def addjson():
     from pymongo import MongoClient
     import json
 
-    file_path = 'pal.json'
+    file_path = 'users.json'
 
     # Connexion à MongoDB
     client = MongoClient("mongodb://localhost:27017/")
     db = client["Hamza"]
-    collection = db["pal"]
+    collection = db["infos"]
 
     # Lire le fichier JSON
     with open(file_path, 'r') as file:
@@ -138,9 +138,9 @@ def affichage():
 
 
 
-def check():
+def login():
 
-    import requests
+
 
     headers = {
         'accept': 'application/json',
@@ -148,26 +148,42 @@ def check():
     }
 
     json_data = {
-        'user': 'test',
-        'password': 'mdp',
+        'user': 'NICOLE',
+        'password': 'mdp2',
     }
 
     response = requests.post('http://localhost:8000/login', headers=headers, json=json_data)
     print(response.json())
 
 
+def create_account():
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+
+    json_data = {
+        'user': 'NICOLE',
+        'password': 'mdp2',
+    }
+
+    response = requests.post('http://localhost:8000/create', headers=headers, json=json_data)
+    print(response.json())
 
 def checktoken():
-    import requests
 
     headers = {
-        'Authorization': 'Bearer ddec93652db86000ffef03ff067ac023af6704acd0782b9453216a20738d8a52',
+        'Authorization': 'Bearer 4fbcb1b639a9bd6c4929ebb4d54b82bdfc95852ca04e192453a7ccd66f128cd6',
     }
 
 
     response = requests.get('http://localhost:8000/check_token', headers=headers)
     print(response.json())
 
-#check()
-checktoken()
+
+create_account()
+login()
+#affichage()
+#addjson()
+#checktoken()
 #get_by_id()
